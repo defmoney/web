@@ -24,7 +24,7 @@
         nav {
             background-color: var(--primary);
             color: white;
-            padding: 0.8rem 5%; /* Adjusted padding for logo */
+            padding: 0.8rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -34,17 +34,17 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        /* --- NEW LOGO STYLES --- */
+        /* --- LOGO STYLES --- */
         .logo {
             display: flex;
             align-items: center;
         }
 
         .nav-logo-img {
-            height: 60px; /* लोगो की ऊंचाई सेट की है */
-            width: auto;  /* चौड़ाई अपने आप सेट होगी */
-            border-radius: 10px; /* लोगो के कोने थोड़े गोल किए हैं */
-            border: 2px solid var(--secondary); /* गोल्ड बॉर्डर ऑप्शनल */
+            height: 60px; 
+            width: auto;  
+            border-radius: 10px;
+            border: 2px solid var(--secondary);
         }
 
         .nav-links { display: flex; gap: 20px; list-style: none; align-items: center; }
@@ -214,8 +214,8 @@
 
     <header id="home" class="hero">
         <h1>Defy Limits. <br> <span>Grow Your Money.</span></h1>
-        <p>DefMoney पर पाएं स्टॉक मार्केट, सेविंग्स और इन्वेस्टमेंट की बेस्ट टिप्स। पैसा कमाना आसान है, उसे बढ़ाना कला है।</p>
-        <button class="hero-btn" onclick="document.getElementById('tips').scrollIntoView()">Latest Tips देखें 👇</button>
+        <p>Get the best insights on Stock Market, Savings, and Investments at DefMoney. Making money is easy, growing it is an art.</p>
+        <button class="hero-btn" onclick="document.getElementById('tips').scrollIntoView()">Explore Tips 👇</button>
     </header>
 
     <div class="stats">
@@ -241,7 +241,7 @@
 
     <section id="calculator" class="container" style="background-color: #f1f5f9;">
         <h2 class="section-title"><span>Return Calculator</span> 🧮</h2>
-        <p style="text-align: center; margin-bottom: 30px;">देखें आपका पैसा 10 साल में कितना बन सकता है।</p>
+        <p style="text-align: center; margin-bottom: 30px;">See how much your money can grow in 10 years.</p>
         
         <div class="calculator-box">
             <div class="form-group">
@@ -264,7 +264,7 @@
 
     <section id="add-tip" class="container add-tip-section">
         <h2 class="section-title"><span>Share Your Knowledge</span></h2>
-        <p style="text-align: center; margin-bottom: 30px;">क्या आपके पास कोई फाइनेंस टिप है? DefMoney कम्युनिटी के साथ शेयर करें।</p>
+        <p style="text-align: center; margin-bottom: 30px;">Do you have a financial strategy? Share it with the DefMoney community.</p>
         
         <form id="tipForm" class="form-styled">
             <input type="text" id="title" placeholder="Tip Title (e.g. Buy Gold Bonds)" required>
@@ -282,16 +282,16 @@
     <section id="faq" class="container">
         <h2 class="section-title"><span>FAQ</span></h2>
         <div class="faq-item">
-            <h4>Q: SIP शुरू करने के लिए कितना पैसा चाहिए?</h4>
-            <p>Ans: आप केवल ₹500/महीने से SIP शुरू कर सकते हैं।</p>
+            <h4>Q: How much money is needed to start an SIP?</h4>
+            <p>Ans: You can start an SIP with as low as ₹500/month.</p>
         </div>
         <div class="faq-item">
-            <h4>Q: इमरजेंसी फंड कितना होना चाहिए?</h4>
-            <p>Ans: कम से कम आपके 6 महीने के खर्चे के बराबर।</p>
+            <h4>Q: How much should my Emergency Fund be?</h4>
+            <p>Ans: It should be at least equal to 6 months of your monthly expenses.</p>
         </div>
         <div class="faq-item">
-            <h4>Q: क्या Crypto सुरक्षित है?</h4>
-            <p>Ans: यह हाई रिस्क है। अपनी कुल पूंजी का 5% से ज्यादा इसमें न लगाएं।</p>
+            <h4>Q: Is Crypto safe?</h4>
+            <p>Ans: It is a high-risk asset. Do not invest more than 5% of your total capital in it.</p>
         </div>
     </section>
 
@@ -301,7 +301,7 @@
                 <h3>
                     <img src="https://i.ibb.co/F4CsF9c6/Whats-App-Image-2025-12-02-at-11-54-33-AM.jpg" alt="DefMoney Logo" class="footer-logo-img">
                 </h3>
-                <p>हमारा मिशन है भारत के हर व्यक्ति को फाइनेंशियल फ्रीडम दिलाना।</p>
+                <p>Our mission is to empower every individual with financial freedom and smart investing.</p>
             </div>
             <div class="footer-col">
                 <h3>Quick Links</h3>
@@ -326,32 +326,32 @@
     </footer>
 
     <script>
-        // --- 1. TIPS DATA & RENDERING ---
+        // --- 1. TIPS DATA & RENDERING (ENGLISH) ---
         let tips = [
             {
                 title: "Rule of 72",
                 category: "Savings",
-                desc: "आपका पैसा कितने साल में दोगुना होगा, यह जानने के लिए 72 को अपने ब्याज़ दर से भाग दें (72 / Interest Rate)।"
+                desc: "To calculate how many years it will take to double your money, divide 72 by the annual interest rate."
             },
             {
-                title: "Index Funds में निवेश करें",
+                title: "Invest in Index Funds",
                 category: "Mutual Funds",
-                desc: "अगर आपको शेयर बाज़ार की समझ कम है, तो Nifty 50 इंडेक्स फंड सबसे सुरक्षित और अच्छा रिटर्न देते हैं।"
+                desc: "If you are new to the stock market, Nifty 50 Index Funds are the safest option with consistent returns."
             },
             {
                 title: "30% Credit Usage",
                 category: "Savings",
-                desc: "अपने क्रेडिट कार्ड की लिमिट का 30% से ज्यादा कभी इस्तेमाल न करें, इससे CIBIL स्कोर बढ़ता है।"
+                desc: "Never use more than 30% of your credit card limit. Keeping it low boosts your CIBIL score significantly."
             },
             {
                 title: "Blue Chip Stocks",
                 category: "Stock Market",
-                desc: "लंबी अवधि के लिए हमेशा बड़ी और भरोसेमंद कंपनियों (Blue Chip) में पैसा लगाएं।"
+                desc: "For long-term wealth, always prefer investing in large, reliable (Blue Chip) companies."
             },
             {
                 title: "Term Insurance",
                 category: "Insurance",
-                desc: "निवेश से पहले टर्म इंश्योरेंस और हेल्थ इंश्योरेंस जरूर लें ताकि आपकी सेविंग्स सुरक्षित रहें।"
+                desc: "Always secure your family with Term and Health Insurance before you start aggressive investing."
             }
         ];
 
