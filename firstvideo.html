@@ -14,10 +14,9 @@
     .thumb{width:100%;height:0;padding-bottom:56%;position:relative;border-radius:8px;overflow:hidden;background:#111}
     .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
     .meta{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .url{font-size:12px;color:#445;word-break:break-all}
+    .title{font-size:12px;color:#445;word-break:break-all}
     .actions{display:flex;gap:8px}
     .btn{background:#0b6ff2;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer}
-    .note{margin-top:12px;font-size:13px;color:#556}
   </style>
 </head>
 <body>
@@ -25,12 +24,9 @@
     <h1>Video thumbnails (no autoplay) — simple page</h1>
 
     <div class="grid" id="grid"></div>
-
-    <p class="note">This page fetches the video file as a blob, captures the first frame and shows it as a static thumbnail. Videos are not played automatically.</p>
   </div>
 
   <script>
-    // List of video URLs to show thumbnails for
     const videoUrls = [
       'https://res.cloudinary.com/dvsubaggj/video/upload/v1763861282/xxzlpdqhdpsnvsmh7gzg.mp4',
       'https://res.cloudinary.com/dvsubaggj/video/upload/v1763861069/axwsvgojonhjrhzvszv1.mp4'
@@ -40,91 +36,99 @@
 
     function el(tag, props = {}, children = []){
       const e = document.createElement(tag);
-      Object.entries(props).forEach(([k,v])=>{ if(k === 'class') e.className = v; else if(k === 'text') e.textContent = v; else e.setAttribute(k,v); });
-      (Array.isArray(children) ? children : [children]).forEach(c=>{ if(typeof c === 'string') e.appendChild(document.createTextNode(c)); else if(c) e.appendChild(c); });
+      Object.entries(props).forEach(([k,v])=>{ 
+        if(k === 'class') e.className = v;
+        else if(k === 'text') e.textContent = v;
+        else e.setAttribute(k,v);
+      });
+      (Array.isArray(children) ? children : [children]).forEach(c=>{
+        if(typeof c === 'string') e.appendChild(document.createTextNode(c)); 
+        else if(c) e.appendChild(c);
+      });
       return e;
+    }
+
+    function randomTitle(){
+      return Math.random().toString(36).substring(2,12) + ".mp4";
     }
 
     async function makeCard(url){
       const card = el('div',{class:'card'});
       const thumbWrap = el('div',{class:'thumb'});
-      const img = el('img', {alt: 'thumbnail', src: ''});
-      // play icon
-      const playIcon = el('div',{style:`position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;`},[
-        el('div',{style:`width:60px;height:60px;background:rgba(0,0,0,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;`},[
-          el('div',{style:`width:0;height:0;border-left:20px solid white;border-top:12px solid transparent;border-bottom:12px solid transparent;margin-left:6px;`})
+      const img = el('img', {alt:'thumbnail', src:''});
+
+      const playIcon = el('div',{style:`
+        position:absolute;inset:0;display:flex;
+        align-items:center;justify-content:center;
+        pointer-events:none;
+      `},[
+        el('div',{style:`
+          width:60px;height:60px;background:rgba(0,0,0,0.4);
+          border-radius:50%;display:flex;align-items:center;justify-content:center;
+        `},[
+          el('div',{style:`
+            width:0;height:0;border-left:20px solid white;
+            border-top:12px solid transparent;border-bottom:12px solid transparent;
+            margin-left:6px;
+          `})
         ])
       ]);
-      thumbWrap.appendChild(playIcon);
+
       thumbWrap.appendChild(img);
+      thumbWrap.appendChild(playIcon);
 
       const meta = el('div',{class:'meta'});
-      // random title generator
-      function randomTitle(){return Math.random().toString(36).substring(2,12)+".mp4";}
-      const titleDiv = el('div',{class:'url', text: randomTitle()});
+      const titleDiv = el('div',{class:'title', text: randomTitle()});
       const actions = el('div',{class:'actions'});
+
       const openBtn = el('button',{class:'btn', text:'Open video'});
-      actions.appendChild(openBtn);(openBtn);
-      meta.appendChild(urlDiv);
+      openBtn.addEventListener('click', ()=> window.open(url, '_blank'));
+      actions.appendChild(openBtn);
+
+      meta.appendChild(titleDiv);
       meta.appendChild(actions);
 
       card.appendChild(thumbWrap);
       card.appendChild(meta);
       grid.appendChild(card);
 
-      // Try to fetch the video as blob (avoid CORS issues with direct video element src sometimes)
       try{
-        const resp = await fetch(url, {mode: 'cors'});
-        if(!resp.ok) throw new Error('Fetch failed: '+resp.status);
+        const resp = await fetch(url);
         const blob = await resp.blob();
         const blobUrl = URL.createObjectURL(blob);
 
-        // create hidden video element to grab a frame
         const v = document.createElement('video');
         v.src = blobUrl;
-        v.crossOrigin = 'anonymous';
         v.muted = true;
-        v.playsInline = true;
         v.preload = 'metadata';
         v.style.display = 'none';
         document.body.appendChild(v);
 
-        // Wait for enough data to draw first frame
-        await new Promise((resolve, reject) => {
-          const onLoaded = () => {
-            // Seek a tiny amount forward to ensure a non-black frame on some files
-            v.currentTime = 0.05;
+        await new Promise(resolve=>{
+          v.onloadeddata = ()=>{
+            v.currentTime = 0.1;
           };
-          const onSeeked = () => resolve();
-          const onError = (e) => reject(e || new Error('Video load error'));
-
-          v.addEventListener('loadeddata', onLoaded, {once:true});
-          v.addEventListener('seeked', onSeeked, {once:true});
-          v.addEventListener('error', onError, {once:true});
+          v.onseeked = resolve;
         });
 
-        // draw to canvas
         const canvas = document.createElement('canvas');
-        canvas.width = v.videoWidth || 640;
-        canvas.height = v.videoHeight || 360;
+        canvas.width = v.videoWidth;
+        canvas.height = v.videoHeight;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
-        img.src = dataUrl;
 
-        // cleanup
+        img.src = canvas.toDataURL('image/jpeg', 0.8);
         v.remove();
-        URL.revokeObjectURL(blobUrl);
-      }catch(err){
-        console.warn('Could not load thumbnail for', url, err);
-        img.alt = 'Thumbnail unavailable';
-        img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360"><rect width="100%" height="100%" fill="#222"/><text x="50%" y="50%" fill="#bbb" font-size="20" dominant-baseline="middle" text-anchor="middle">Thumbnail not available</text></svg>`);
+      }
+      catch(e){
+        img.src = "";
       }
     }
 
-    // build UI
-    (async function(){
-      for(const u of videoUrls) await makeCard(u);
+    (async ()=>{
+      for(const link of videoUrls){
+        await makeCard(link);
+      }
     })();
   </script>
 </body>
