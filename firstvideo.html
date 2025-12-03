@@ -3,133 +3,203 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Video Thumbnails</title>
+  <title>Finance Videos</title>
+
   <style>
     :root{font-family:system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0}
-    body{display:flex;min-height:100vh;align-items:flex-start;justify-content:center;padding:32px;background:#f6f7fb}
+
+    /* ★ Light Green Finance Gradient Background */
+    body{
+      display:flex;
+      min-height:100vh;
+      align-items:flex-start;
+      justify-content:center;
+      padding:32px;
+      background: linear-gradient(to bottom, #e8f7e8 0%, #f7fff7 40%, #ffffff 100%);
+    }
+
     .wrap{width:100%;max-width:980px}
-    h1{margin:0 0 18px;font-size:20px;color:#0b1220}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-    .card{background:#fff;border-radius:12px;padding:12px;box-shadow:0 6px 18px rgba(11,17,32,0.06);display:flex;flex-direction:column;gap:10px}
-    .thumb{width:100%;height:0;padding-bottom:56%;position:relative;border-radius:8px;overflow:hidden;background:#111}
-    .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-    .meta{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .title{font-size:12px;color:#445;word-break:break-all}
-    .actions{display:flex;gap:8px}
-    .btn{background:#0b6ff2;color:#fff;border:none;padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer}
+    h1{margin:0 0 18px;font-size:24px;color:#0b1220;font-weight:600}
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:16px
+    }
+
+    .card{
+      background:#fff;
+      border-radius:12px;
+      padding:12px;
+      box-shadow:0 6px 18px rgba(11,17,32,0.08);
+      display:flex;
+      flex-direction:column;
+      gap:10px
+    }
+
+    .thumb{
+      width:100%;
+      height:0;
+      padding-bottom:56%;
+      position:relative;
+      border-radius:8px;
+      overflow:hidden;
+      background:#111
+    }
+
+    .thumb img{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block
+    }
+
+    .meta{display:flex;flex-direction:column;gap:6px}
+    .title{font-size:16px;font-weight:600;color:#004e1a}
+    .desc{font-size:13px;color:#444}
+    .actions{display:flex;justify-content:flex-end}
+    .btn{
+      background:#048848;
+      color:#fff;
+      border:none;
+      padding:6px 12px;
+      border-radius:8px;
+      font-size:13px;
+      cursor:pointer;
+      font-weight:600
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
-    <h1>Video thumbnails (no autoplay) — simple page</h1>
-
+    <h1>Finance Learning Videos</h1>
     <div class="grid" id="grid"></div>
   </div>
 
-  <script>
-    const videoUrls = [
-      'https://res.cloudinary.com/dvsubaggj/video/upload/v1763861282/xxzlpdqhdpsnvsmh7gzg.mp4',
-      'https://res.cloudinary.com/dvsubaggj/video/upload/v1763861069/axwsvgojonhjrhzvszv1.mp4'
-    ];
+<script>
+  const videoUrls = [
+    'https://res.cloudinary.com/dvsubaggj/video/upload/v1763861282/xxzlpdqhdpsnvsmh7gzg.mp4',
+    'https://res.cloudinary.com/dvsubaggj/video/upload/v1763861069/axwsvgojonhjrhzvszv1.mp4'
+  ];
 
-    const grid = document.getElementById('grid');
+  const financeTitles = [
+    "Secure Future Deposit",
+    "Smart Investment FD",
+    "FD vs Mutual Fund – Best Option?",
+    "Safe Wealth Growth Plan",
+    "High-Return Savings Strategy",
+    "Beginner’s Finance Guide",
+  ];
 
-    function el(tag, props = {}, children = []){
-      const e = document.createElement(tag);
-      Object.entries(props).forEach(([k,v])=>{ 
-        if(k === 'class') e.className = v;
-        else if(k === 'text') e.textContent = v;
-        else e.setAttribute(k,v);
-      });
-      (Array.isArray(children) ? children : [children]).forEach(c=>{
-        if(typeof c === 'string') e.appendChild(document.createTextNode(c)); 
-        else if(c) e.appendChild(c);
-      });
-      return e;
-    }
+  const financeDescriptions = [
+    "Learn how Fixed Deposits work and how you can earn guaranteed returns safely.",
+    "Understand the best strategy for growing your savings with secure FD plans.",
+    "Compare FD with Mutual Funds and choose your best investment option.",
+    "Smart ways to grow your wealth with safe and stable investment plans.",
+    "Easy explanation of interest, returns, and safe investment strategy.",
+    "Finance basics explained in simple language for beginners.",
+  ];
 
-    function randomTitle(){
-      return Math.random().toString(36).substring(2,12) + ".mp4";
-    }
+  const grid = document.getElementById("grid");
 
-    async function makeCard(url){
-      const card = el('div',{class:'card'});
-      const thumbWrap = el('div',{class:'thumb'});
-      const img = el('img', {alt:'thumbnail', src:''});
+  function el(tag, props = {}, children = []) {
+    const e = document.createElement(tag);
+    Object.entries(props).forEach(([k,v])=>{
+      if (k === "class") e.className = v;
+      else if (k === "text") e.textContent = v;
+      else e.setAttribute(k,v);
+    });
+    (Array.isArray(children)?children:[children]).forEach(c=>{
+      if (typeof c === "string") e.appendChild(document.createTextNode(c));
+      else if (c) e.appendChild(c);
+    });
+    return e;
+  }
 
-      const playIcon = el('div',{style:`
-        position:absolute;inset:0;display:flex;
-        align-items:center;justify-content:center;
-        pointer-events:none;
+  async function makeCard(url){
+    const randomTitle = financeTitles[Math.floor(Math.random()*financeTitles.length)];
+    const randomDesc  = financeDescriptions[Math.floor(Math.random()*financeDescriptions.length)];
+
+    const card = el("div",{class:"card"});
+    const thumbWrap = el("div",{class:"thumb"});
+    const img = el("img",{alt:"thumbnail",src:""});
+
+    // Play icon
+    const playIcon = el("div",{style:`
+      position:absolute;inset:0;display:flex;
+      align-items:center;justify-content:center;
+      pointer-events:none;
+    `},[
+      el("div",{style:`
+        width:60px;height:60px;background:rgba(0,0,0,0.4);
+        border-radius:50%;display:flex;align-items:center;justify-content:center;
       `},[
-        el('div',{style:`
-          width:60px;height:60px;background:rgba(0,0,0,0.4);
-          border-radius:50%;display:flex;align-items:center;justify-content:center;
-        `},[
-          el('div',{style:`
-            width:0;height:0;border-left:20px solid white;
-            border-top:12px solid transparent;border-bottom:12px solid transparent;
-            margin-left:6px;
-          `})
-        ])
-      ]);
+        el("div",{style:`
+          width:0;height:0;border-left:20px solid white;
+          border-top:12px solid transparent;border-bottom:12px solid transparent;
+          margin-left:6px;
+        `})
+      ])
+    ]);
 
-      thumbWrap.appendChild(img);
-      thumbWrap.appendChild(playIcon);
+    thumbWrap.appendChild(img);
+    thumbWrap.appendChild(playIcon);
 
-      const meta = el('div',{class:'meta'});
-      const titleDiv = el('div',{class:'title', text: randomTitle()});
-      const actions = el('div',{class:'actions'});
+    // Text
+    const meta = el("div",{class:"meta"});
+    const titleDiv = el("div",{class:"title",text:randomTitle});
+    const descDiv  = el("div",{class:"desc",text:randomDesc});
 
-      const openBtn = el('button',{class:'btn', text:'Open video'});
-      openBtn.addEventListener('click', ()=> window.open(url, '_blank'));
-      actions.appendChild(openBtn);
+    const actions = el("div",{class:"actions"});
+    const btn = el("button",{class:"btn",text:"Watch Video →"});
+    btn.addEventListener("click",()=>window.open(url,"_blank"));
+    actions.appendChild(btn);
 
-      meta.appendChild(titleDiv);
-      meta.appendChild(actions);
+    meta.appendChild(titleDiv);
+    meta.appendChild(descDiv);
+    meta.appendChild(actions);
 
-      card.appendChild(thumbWrap);
-      card.appendChild(meta);
-      grid.appendChild(card);
+    card.appendChild(thumbWrap);
+    card.appendChild(meta);
+    grid.appendChild(card);
 
-      try{
-        const resp = await fetch(url);
-        const blob = await resp.blob();
-        const blobUrl = URL.createObjectURL(blob);
+    // Thumbnail generation
+    try{
+      const r = await fetch(url);
+      const blob = await r.blob();
+      const blobUrl = URL.createObjectURL(blob);
 
-        const v = document.createElement('video');
-        v.src = blobUrl;
-        v.muted = true;
-        v.preload = 'metadata';
-        v.style.display = 'none';
-        document.body.appendChild(v);
+      const v = document.createElement("video");
+      v.src = blobUrl;
+      v.muted = true;
+      v.preload = "metadata";
+      v.style.display = "none";
+      document.body.appendChild(v);
 
-        await new Promise(resolve=>{
-          v.onloadeddata = ()=>{
-            v.currentTime = 0.1;
-          };
-          v.onseeked = resolve;
-        });
+      await new Promise(resolve=>{
+        v.onloadeddata = ()=>v.currentTime = 0.1;
+        v.onseeked = resolve;
+      });
 
-        const canvas = document.createElement('canvas');
-        canvas.width = v.videoWidth;
-        canvas.height = v.videoHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(v, 0, 0, canvas.width, canvas.height);
+      const canvas = document.createElement("canvas");
+      canvas.width = v.videoWidth;
+      canvas.height = v.videoHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(v,0,0);
+      img.src = canvas.toDataURL("image/jpeg",0.85);
 
-        img.src = canvas.toDataURL('image/jpeg', 0.8);
-        v.remove();
-      }
-      catch(e){
-        img.src = "";
-      }
+      v.remove();
+    } catch(e){
+      img.src = "";
     }
+  }
 
-    (async ()=>{
-      for(const link of videoUrls){
-        await makeCard(link);
-      }
-    })();
-  </script>
+  (async ()=>{
+    for (const u of videoUrls) await makeCard(u);
+  })();
+</script>
 </body>
 </html>
