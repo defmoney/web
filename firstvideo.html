@@ -2,20 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <!-- 🌟 Zoom Completely Disabled -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+
   <title>Finance Videos</title>
 
   <style>
+
+    /* 🌟 Hide scrollbars everywhere */
+    *::-webkit-scrollbar { display: none; }
+    * { -ms-overflow-style: none; scrollbar-width: none; }
+
     :root{font-family:system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0}
 
-    /* ★ Light Green Finance Gradient Background */
+    /* 🌟 Finance gradient background */
     body{
       display:flex;
       min-height:100vh;
       align-items:flex-start;
       justify-content:center;
       padding:32px;
+      overflow-x:hidden;
       background: linear-gradient(to bottom, #e8f7e8 0%, #f7fff7 40%, #ffffff 100%);
+      touch-action: pan-y; /* pinch zoom disable */
     }
 
     .wrap{width:100%;max-width:980px}
@@ -44,7 +54,8 @@
       position:relative;
       border-radius:8px;
       overflow:hidden;
-      background:#111
+      background:#111;
+      cursor:pointer;
     }
 
     .thumb img{
@@ -52,8 +63,7 @@
       inset:0;
       width:100%;
       height:100%;
-      object-fit:cover;
-      display:block
+      object-fit:cover
     }
 
     .meta{display:flex;flex-direction:column;gap:6px}
@@ -88,19 +98,19 @@
   const financeTitles = [
     "Secure Future Deposit",
     "Smart Investment FD",
-    "FD vs Mutual Fund – Best Option?",
-    "Safe Wealth Growth Plan",
-    "High-Return Savings Strategy",
-    "Beginner’s Finance Guide",
+    "FD vs Mutual Fund",
+    "Safe Wealth Growth",
+    "High-Return Savings Plan",
+    "Finance Basics Tutorial",
   ];
 
   const financeDescriptions = [
-    "Learn how Fixed Deposits work and how you can earn guaranteed returns safely.",
-    "Understand the best strategy for growing your savings with secure FD plans.",
-    "Compare FD with Mutual Funds and choose your best investment option.",
-    "Smart ways to grow your wealth with safe and stable investment plans.",
-    "Easy explanation of interest, returns, and safe investment strategy.",
-    "Finance basics explained in simple language for beginners.",
+    "Learn how Fixed Deposits work and earn guaranteed returns.",
+    "Understand the best FD strategies for safe investing.",
+    "Compare FD vs Mutual Funds in simple language.",
+    "Grow your wealth with stable & low-risk plans.",
+    "Why FD is the safest investment option today.",
+    "Finance basics explained easily for beginners.",
   ];
 
   const grid = document.getElementById("grid");
@@ -120,22 +130,22 @@
   }
 
   async function makeCard(url){
-    const randomTitle = financeTitles[Math.floor(Math.random()*financeTitles.length)];
-    const randomDesc  = financeDescriptions[Math.floor(Math.random()*financeDescriptions.length)];
+    const title = financeTitles[Math.floor(Math.random()*financeTitles.length)];
+    const desc  = financeDescriptions[Math.floor(Math.random()*financeDescriptions.length)];
 
     const card = el("div",{class:"card"});
     const thumbWrap = el("div",{class:"thumb"});
     const img = el("img",{alt:"thumbnail",src:""});
 
-    // Play icon
+    /* 🌟 Play icon clickable */
     const playIcon = el("div",{style:`
       position:absolute;inset:0;display:flex;
       align-items:center;justify-content:center;
-      pointer-events:none;
     `},[
       el("div",{style:`
         width:60px;height:60px;background:rgba(0,0,0,0.4);
         border-radius:50%;display:flex;align-items:center;justify-content:center;
+        cursor:pointer;
       `},[
         el("div",{style:`
           width:0;height:0;border-left:20px solid white;
@@ -145,19 +155,22 @@
       ])
     ]);
 
+    /* CLICK → video open */
+    playIcon.onclick = () => window.open(url, "_blank");
+    thumbWrap.onclick = () => window.open(url, "_blank");
+
     thumbWrap.appendChild(img);
     thumbWrap.appendChild(playIcon);
 
-    // Text
     const meta = el("div",{class:"meta"});
-    const titleDiv = el("div",{class:"title",text:randomTitle});
-    const descDiv  = el("div",{class:"desc",text:randomDesc});
+    const titleDiv = el("div",{class:"title",text:title});
+    const descDiv  = el("div",{class:"desc",text:desc});
 
     const actions = el("div",{class:"actions"});
     const btn = el("button",{class:"btn",text:"Watch Video →"});
-    btn.addEventListener("click",()=>window.open(url,"_blank"));
-    actions.appendChild(btn);
+    btn.onclick = () => window.open(url,"_blank");
 
+    actions.appendChild(btn);
     meta.appendChild(titleDiv);
     meta.appendChild(descDiv);
     meta.appendChild(actions);
@@ -166,7 +179,7 @@
     card.appendChild(meta);
     grid.appendChild(card);
 
-    // Thumbnail generation
+    /* Thumbnail Capture */
     try{
       const r = await fetch(url);
       const blob = await r.blob();
@@ -200,6 +213,21 @@
   (async ()=>{
     for (const u of videoUrls) await makeCard(u);
   })();
+
+  /* 🌟 Disable Ctrl + Zoom */
+  window.addEventListener("wheel", function(e){
+    if(e.ctrlKey) e.preventDefault();
+  }, { passive:false });
+
+  /* 🌟 Disable Double-tap Zoom */
+  let lastTouch = 0;
+  document.addEventListener("touchend", function(e){
+    const now = Date.now();
+    if(now - lastTouch < 300){
+      e.preventDefault();
+    }
+    lastTouch = now;
+  }, { passive:false });
 </script>
 </body>
 </html>
