@@ -49,14 +49,22 @@
       const card = el('div',{class:'card'});
       const thumbWrap = el('div',{class:'thumb'});
       const img = el('img', {alt: 'thumbnail', src: ''});
+      // play icon
+      const playIcon = el('div',{style:`position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;`},[
+        el('div',{style:`width:60px;height:60px;background:rgba(0,0,0,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;`},[
+          el('div',{style:`width:0;height:0;border-left:20px solid white;border-top:12px solid transparent;border-bottom:12px solid transparent;margin-left:6px;`})
+        ])
+      ]);
+      thumbWrap.appendChild(playIcon);
       thumbWrap.appendChild(img);
 
       const meta = el('div',{class:'meta'});
-      const urlDiv = el('div',{class:'url', text: url});
+      // random title generator
+      function randomTitle(){return Math.random().toString(36).substring(2,12)+".mp4";}
+      const titleDiv = el('div',{class:'url', text: randomTitle()});
       const actions = el('div',{class:'actions'});
       const openBtn = el('button',{class:'btn', text:'Open video'});
-      openBtn.addEventListener('click', ()=> window.open(url, '_blank'));
-      actions.appendChild(openBtn);
+      actions.appendChild(openBtn);(openBtn);
       meta.appendChild(urlDiv);
       meta.appendChild(actions);
 
