@@ -1,1 +1,235 @@
-sdvdsvdsavsda
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+
+  <!-- 🌟 Zoom Completely Disabled -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+
+  <title>Finance Videos</title>
+
+  <style>
+
+    /* 🌟 Hide scrollbars everywhere */
+    *::-webkit-scrollbar { display: none; }
+    * { -ms-overflow-style: none; scrollbar-width: none; }
+
+    :root{font-family:system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0}
+
+    /* 🌟 Finance gradient background */
+    body{
+      display:flex;
+      min-height:100vh;
+      align-items:flex-start;
+      justify-content:center;
+      padding:32px;
+      overflow-x:hidden;
+      background: linear-gradient(to bottom, #e8f7e8 0%, #f7fff7 40%, #ffffff 100%);
+      touch-action: pan-y; /* pinch zoom disable */
+    }
+
+    .wrap{width:100%;max-width:980px}
+    h1{margin:0 0 18px;font-size:24px;color:#0b1220;font-weight:600}
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:16px
+    }
+
+    .card{
+      background:#fff;
+      border-radius:12px;
+      padding:12px;
+      box-shadow:0 6px 18px rgba(11,17,32,0.08);
+      display:flex;
+      flex-direction:column;
+      gap:10px
+    }
+
+    .thumb{
+      width:100%;
+      height:0;
+      padding-bottom:56%;
+      position:relative;
+      border-radius:8px;
+      overflow:hidden;
+      background:#111;
+      cursor:pointer;
+    }
+
+    .thumb img{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover
+    }
+
+    .meta{display:flex;flex-direction:column;gap:6px}
+    .title{font-size:16px;font-weight:600;color:#004e1a}
+    .desc{font-size:13px;color:#444}
+    .actions{display:flex;justify-content:flex-end}
+    .btn{
+      background:#048848;
+      color:#fff;
+      border:none;
+      padding:6px 12px;
+      border-radius:8px;
+      font-size:13px;
+      cursor:pointer;
+      font-weight:600
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <h1>Finance Learning Videos</h1>
+    <div class="grid" id="grid"></div>
+  </div>
+
+<script>
+  const videoUrls = [
+    'https://res.cloudinary.com/dvsubaggj/video/upload/v1763861282/xxzlpdqhdpsnvsmh7gzg.mp4',
+    'https://res.cloudinary.com/dvsubaggj/video/upload/v1763861069/axwsvgojonhjrhzvszv1.mp4',
+    'https://res.cloudinary.com/dvsubaggj/video/upload/v1763861069/axwsvgojonhjrhzvszv1.mp4',
+    'https://res.cloudinary.com/dvsubaggj/video/upload/v1763861069/axwsvgojonhjrhzvszv1.mp4'
+  ];
+
+  const financeTitles = [
+    "Secure Future Deposit",
+    "Smart Investment FD",
+    "FD vs Mutual Fund",
+    "Safe Wealth Growth",
+    "High-Return Savings Plan",
+    "Finance Basics Tutorial",
+  ];
+
+  const financeDescriptions = [
+    "Learn how Fixed Deposits work and earn guaranteed returns.",
+    "Understand the best FD strategies for safe investing.",
+    "Compare FD vs Mutual Funds in simple language.",
+    "Grow your wealth with stable & low-risk plans.",
+    "Why FD is the safest investment option today.",
+    "Finance basics explained easily for beginners.",
+  ];
+
+  const grid = document.getElementById("grid");
+
+  function el(tag, props = {}, children = []) {
+    const e = document.createElement(tag);
+    Object.entries(props).forEach(([k,v])=>{
+      if (k === "class") e.className = v;
+      else if (k === "text") e.textContent = v;
+      else e.setAttribute(k,v);
+    });
+    (Array.isArray(children)?children:[children]).forEach(c=>{
+      if (typeof c === "string") e.appendChild(document.createTextNode(c));
+      else if (c) e.appendChild(c);
+    });
+    return e;
+  }
+
+  async function makeCard(url){
+    const title = financeTitles[Math.floor(Math.random()*financeTitles.length)];
+    const desc  = financeDescriptions[Math.floor(Math.random()*financeDescriptions.length)];
+
+    const card = el("div",{class:"card"});
+    const thumbWrap = el("div",{class:"thumb"});
+    const img = el("img",{alt:"thumbnail",src:""});
+
+    /* 🌟 Play icon clickable */
+    const playIcon = el("div",{style:`
+      position:absolute;inset:0;display:flex;
+      align-items:center;justify-content:center;
+    `},[
+      el("div",{style:`
+        width:60px;height:60px;background:rgba(0,0,0,0.4);
+        border-radius:50%;display:flex;align-items:center;justify-content:center;
+        cursor:pointer;
+      `},[
+        el("div",{style:`
+          width:0;height:0;border-left:20px solid white;
+          border-top:12px solid transparent;border-bottom:12px solid transparent;
+          margin-left:6px;
+        `})
+      ])
+    ]);
+
+    /* CLICK → video open */
+    playIcon.onclick = () => window.open(url, "_blank");
+    thumbWrap.onclick = () => window.open(url, "_blank");
+
+    thumbWrap.appendChild(img);
+    thumbWrap.appendChild(playIcon);
+
+    const meta = el("div",{class:"meta"});
+    const titleDiv = el("div",{class:"title",text:title});
+    const descDiv  = el("div",{class:"desc",text:desc});
+
+    const actions = el("div",{class:"actions"});
+    const btn = el("button",{class:"btn",text:"Watch Video →"});
+    btn.onclick = () => window.open(url,"_blank");
+
+    actions.appendChild(btn);
+    meta.appendChild(titleDiv);
+    meta.appendChild(descDiv);
+    meta.appendChild(actions);
+
+    card.appendChild(thumbWrap);
+    card.appendChild(meta);
+    grid.appendChild(card);
+
+    /* Thumbnail Capture */
+    try{
+      const r = await fetch(url);
+      const blob = await r.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const v = document.createElement("video");
+      v.src = blobUrl;
+      v.muted = true;
+      v.preload = "metadata";
+      v.style.display = "none";
+      document.body.appendChild(v);
+
+      await new Promise(resolve=>{
+        v.onloadeddata = ()=>v.currentTime = 0.1;
+        v.onseeked = resolve;
+      });
+
+      const canvas = document.createElement("canvas");
+      canvas.width = v.videoWidth;
+      canvas.height = v.videoHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(v,0,0);
+      img.src = canvas.toDataURL("image/jpeg",0.85);
+
+      v.remove();
+    } catch(e){
+      img.src = "";
+    }
+  }
+
+  (async ()=>{
+    for (const u of videoUrls) await makeCard(u);
+  })();
+
+  /* 🌟 Disable Ctrl + Zoom */
+  window.addEventListener("wheel", function(e){
+    if(e.ctrlKey) e.preventDefault();
+  }, { passive:false });
+
+  /* 🌟 Disable Double-tap Zoom */
+  let lastTouch = 0;
+  document.addEventListener("touchend", function(e){
+    const now = Date.now();
+    if(now - lastTouch < 300){
+      e.preventDefault();
+    }
+    lastTouch = now;
+  }, { passive:false });
+</script>
+</body>
+</html>
